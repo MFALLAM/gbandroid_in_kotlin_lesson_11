@@ -7,13 +7,18 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import coil.ImageLoader
+import coil.decode.SvgDecoder
+import coil.request.ImageRequest
 import com.example.gblesson4.R
+import com.example.gblesson4.model.City
 
 import com.example.gblesson4.model.Weather
 import com.example.gblesson4.viewmodel.AppState
 import com.example.gblesson4.viewmodel.WeatherDTOModel
+import com.example.gblesson4.viewmodel.WeatherModel
+import com.example.gblesson4.viewmodel.WeatherModelFromRoom
 import com.google.android.material.snackbar.Snackbar
-
 
 class WeatherFragmentDetails : Fragment() {
 

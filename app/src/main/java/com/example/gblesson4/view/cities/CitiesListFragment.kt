@@ -2,20 +2,27 @@ package com.example.gblesson4.view.cities
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.location.LocationListener
+import android.location.LocationManager
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.example.gblesson4.App
 import com.example.gblesson4.R
+import com.example.gblesson4.model.Location
 import com.example.gblesson4.model.databinding.FragmentCitiesListBinding
 
 import com.example.gblesson4.model.Location.Russia
 import com.example.gblesson4.model.Location.World
 import com.example.gblesson4.model.Weather
+import com.example.gblesson4.model.getAddress
+import com.example.gblesson4.model.getDefaultCity
 import com.example.gblesson4.utils.SP_KEY_LOCATION
 import com.example.gblesson4.utils.SP_REGION_SETTINGS
+import com.example.gblesson4.utils.checkPermission
 import com.example.gblesson4.view.details.WeatherFragmentDetails
 
 import com.example.gblesson4.viewmodel.AppState
@@ -23,13 +30,15 @@ import com.example.gblesson4.viewmodel.AppStateLocal
 import com.example.gblesson4.viewmodel.WeatherViewModelList
 
 import com.google.android.material.snackbar.Snackbar
+import java.util.jar.Manifest
 
 class CitiesListFragment : Fragment() {
 
     private var _binding: FragmentCitiesListBinding? = null
     private val binding get() = _binding!!
     private var sharedPreferences: SharedPreferences? = null
-    private var location = Russia // Временное решение, потом локацию будем получать от Android
+    private var location = Russia
+    private var currentLocation = getDefaultCity()
 
     private val viewModel: WeatherViewModelList by lazy {
         ViewModelProvider(this)[WeatherViewModelList::class.java]
@@ -37,17 +46,15 @@ class CitiesListFragment : Fragment() {
 
     private val adapter = CitiesFragmentAdapter(object : OnItemViewClickListener {
         override fun onItemViewClick(weather: Weather) {
-            activity?.run {
-                supportFragmentManager
-                    .beginTransaction()
-                    .add(R.id.container, WeatherFragmentDetails.newInstance(
-                        Bundle().apply {
-                            putParcelable(WeatherFragmentDetails.BUNDLE_EXTRA, weather)
-                        }
-                    ))
-                    .addToBackStack("")
-                    .commitAllowingStateLoss()
-            }
+            requireActivity().supportFragmentManager
+                .beginTransaction()
+                .add(R.id.container, WeatherFragmentDetails.newInstance(
+                    Bundle().apply {
+                        putParcelable(WeatherFragmentDetails.BUNDLE_EXTRA, weather)
+                    }
+                ))
+                .addToBackStack("")
+                .commitAllowingStateLoss()
         }
     })
 
@@ -93,6 +100,22 @@ class CitiesListFragment : Fragment() {
 
         viewModel.getLiveData().observe(viewLifecycleOwner) { appState -> renderData(appState) }
         viewModel.getWeather(location)
+
+        binding.mapFragmentFAB.setOnClickListener {
+            showCurrentLocationWeather()
+        }
+        getCurrentLocation()
+    }
+
+    private fun showCurrentLocationWeather() {
+        getCurrentLocation()
+        requireActivity().supportFragmentManager
+            .beginTransaction()
+            .replace(R.id.container, WeatherFragmentDetails.newInstance(Bundle().apply {
+                putParcelable(WeatherFragmentDetails.BUNDLE_EXTRA, Weather(currentLocation))
+            }))
+            .addToBackStack("")
+            .commit()
     }
 
     private fun renderData(appState: AppStateLocal) = when (appState) {
@@ -140,5 +163,45 @@ class CitiesListFragment : Fragment() {
 
     interface OnItemViewClickListener {
         fun onItemViewClick(weather: Weather)
+    }
+
+
+    private fun getCurrentLocation() {
+        val locationManager =
+            App.appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        val hasNetwork = locationManager.isProviderEnabled(LocationManager.NETWORK_PROVIDER)
+        val hasGps = locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)
+        val locationListener = object : LocationListener {
+            override fun onLocationChanged(location: Location) {
+                currentLocation = getAddress(location.latitude, location.longitude)
+            }
+        }
+
+        if (hasNetwork || hasGps && checkPermission(
+                requireActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION,
+                getString(R.string.location_alert_title),
+                getString(R.string.location_alert_request_text)
+            )) {
+            if (hasGps && checkPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    getString(R.string.location_alert_title),
+                    getString(R.string.location_alert_request_text)
+                )) {
+                locationManager.requestLocationUpdates(
+                    LocationManager.GPS_PROVIDER, 500L,
+                    0F, locationListener)
+            } else if (checkPermission(
+                    requireActivity(),
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    getString(R.string.location_alert_title),
+                    getString(R.string.location_alert_request_text)
+                )){
+                locationManager.requestLocationUpdates(
+                    LocationManager.NETWORK_PROVIDER, 500L,
+                    0F, locationListener)
+            }
+        }
     }
 }

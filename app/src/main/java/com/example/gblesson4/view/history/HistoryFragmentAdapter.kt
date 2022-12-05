@@ -29,11 +29,9 @@ class HistoryFragmentAdapter(
         parent: ViewGroup,
         viewType: Int
     ) : HistoryViewHolder {
-        return HistoryViewHolder(
-            LayoutInflater.from(parent.context)
-            .inflate(R.layout.weather_history_li`st_recycler_item, parent, false)
-                as View
-        ) }
+        return HistoryViewHolder(LayoutInflater.from(parent.context)
+            .inflate(R.layout.weather_history_list_recycler_item, parent, false)
+                as View) }
 
     override fun onBindViewHolder(holder: HistoryViewHolder, position: Int) {
         holder.bind(weatherData[position])

@@ -3,7 +3,10 @@ package com.example.gblesson4.view
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.Menu
+import android.view.MenuItem
+import androidx.fragment.app.Fragment
 import com.example.gblesson4.R
+import com.example.gblesson4.camera.ContactsFragment
 import com.example.gblesson4.view.cities.CitiesListFragment
 import com.example.gblesson4.view.history.HistoryListFragment
 import com.example.gblesson4.view.map.MapsFragment
@@ -29,24 +32,15 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.history_menu_item -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, HistoryListFragment.newInstance())
-                    .addToBackStack("")
-                    .commit()
+                navigateTo(HistoryListFragment.newInstance())
             }
 
             R.id.map_menu_item -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, MapsFragment.newInstance())
-                    .addToBackStack("")
-                    .commit()
+                navigateTo(MapsFragment.newInstance())
             }
 
             R.id.contacts_menu_item -> {
-                supportFragmentManager.beginTransaction()
-                    .replace(R.id.container, ContactsFragment.newInstance())
-                    .addToBackStack("")
-                    .commit()
+                navigateTo(ContactsFragment.newInstance())
             }
 
             else -> {
@@ -56,4 +50,12 @@ class MainActivity : AppCompatActivity() {
 
         return true
     }
+
+    private fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.container, fragment)
+            .addToBackStack("")
+            .commit()
+    }
+
 }

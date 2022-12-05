@@ -8,6 +8,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.gblesson4.R
 import com.example.gblesson4.model.Weather
+import com.example.gblesson4.viewmodel.AppStateRoom
+import com.example.gblesson4.viewmodel.WeatherHistoryModelFromRoom
 import com.google.android.material.snackbar.Snackbar
 
 class HistoryListFragment : Fragment() {
@@ -24,8 +26,7 @@ class HistoryListFragment : Fragment() {
             activity?.run {
                 supportFragmentManager
                     .beginTransaction()
-                    .replace(
-                        R.id.container, HistoryFragmentDetails.newInstance(
+                    .replace(R.id.container, HistoryFragmentDetails.newInstance(
                         Bundle().apply {
                             putParcelable(HistoryFragmentDetails.BUNDLE_EXTRA, weather)
                         }
@@ -38,15 +39,6 @@ class HistoryListFragment : Fragment() {
 
     companion object {
         fun newInstance() = HistoryListFragment()
-    }
-
-    private fun View.showSnackBar(
-        text: String,
-        actionText: String,
-        action: (View) -> Unit,
-        length: Int = Snackbar.LENGTH_INDEFINITE
-    ) {
-        Snackbar.make(this, text, length).setAction(actionText, action).show()
     }
 
     override fun onCreateView(

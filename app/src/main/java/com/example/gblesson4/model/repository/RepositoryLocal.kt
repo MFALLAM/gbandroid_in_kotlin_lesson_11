@@ -10,11 +10,6 @@ fun interface RepositoryWeatherFromLocal {
 }
 
 
-fun interface RepositoryWeatherFromLocal {
-    fun getWeather(hasInternet: Boolean, location: Location): List<Weather>
-}
-
-
 class RepositoryLocalImpl : RepositoryWeatherFromLocal {
     override fun getWeather(
         hasInternet: Boolean,
