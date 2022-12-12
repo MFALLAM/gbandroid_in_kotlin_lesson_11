@@ -3,6 +3,7 @@ package com.example.gblesson4.domain
 import com.example.gblesson4.model.model
 
 import android.os.Parcelable
+import com.example.gblesson4.model.City
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

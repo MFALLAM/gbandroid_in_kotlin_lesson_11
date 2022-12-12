@@ -23,7 +23,6 @@ class WeatherModel(
         liveData.postValue(AppState.Success(weather))
     }
 
-
     private fun getWeatherFromServer(city: City) {
         liveData.value = AppState.Loading
         val detailsRepositoryImpl = RetrofitRepositoryImpl(RemoteDataSource())

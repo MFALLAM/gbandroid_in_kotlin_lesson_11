@@ -19,5 +19,4 @@ class WeatherHistoryModelFromRoom(
             liveData.postValue(AppStateRoom.Success(weatherModelFromRoom.getAllWeatherFromHistory()))
         }.start()
     }
-
 }

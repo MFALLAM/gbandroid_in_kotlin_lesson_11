@@ -5,6 +5,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.pm.PackageManager
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import androidx.core.app.ActivityCompat.requestPermissions
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.core.content.ContextCompat
@@ -62,7 +63,6 @@ private fun permissionRequest(activity: Activity, permission: String) {
     requestPermissions(activity, arrayOf(permission), REQUEST_CODE_READ_CONTACTS)
 }
 
-@SuppressLint("ServiceCast")
 fun hideKeyboard(view: View) {
     val inputMethodManager = App.appContext.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
     inputMethodManager.hideSoftInputFromWindow(view.windowToken, 0)

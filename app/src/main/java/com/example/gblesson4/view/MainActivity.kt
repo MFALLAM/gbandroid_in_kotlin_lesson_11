@@ -22,6 +22,8 @@ class MainActivity : AppCompatActivity() {
                 .add(R.id.container, CitiesListFragment.newInstance())
                 .commitNow()
         }
+
+        showToken()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -57,5 +59,4 @@ class MainActivity : AppCompatActivity() {
             .addToBackStack("")
             .commit()
     }
-
 }

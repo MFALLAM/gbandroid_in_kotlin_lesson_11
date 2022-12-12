@@ -35,5 +35,4 @@ class WeatherModelFromRoom(
             liveData.postValue(AppState.Error(e))
         }
     }
-
 }

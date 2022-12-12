@@ -100,7 +100,6 @@ class MapsFragment : Fragment() {
         }
     }
 
-
     private fun getCurrentLocation() {
         val locationManager =
             App.appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
